@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <!-- Rich Velvet Crimson Heart Gradient -->
+    <radialGradient id="heartGrad" cx="38%" cy="28%" r="72%">
+      <stop offset="0%" stop-color="#FF5268" />
+      <stop offset="38%" stop-color="#E31837" />
+      <stop offset="78%" stop-color="#9E0B22" />
+      <stop offset="100%" stop-color="#5E0413" />
+    </radialGradient>
+
+    <!-- Warm Golden Inner Glow Blending Heart & X -->
+    <radialGradient id="blendGlow" cx="50%" cy="48%" r="48%">
+      <stop offset="0%" stop-color="#FFE49E" stop-opacity="0.65" />
+      <stop offset="55%" stop-color="#F5B041" stop-opacity="0.22" />
+      <stop offset="100%" stop-color="#9E0B22" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Metallic Champagne Gold Gradient for the X & Rim -->
+    <linearGradient id="goldGrad" x1="15%" y1="10%" x2="85%" y2="90%">
+      <stop offset="0%" stop-color="#FFF7D6" />
+      <stop offset="28%" stop-color="#F5D78E" />
+      <stop offset="55%" stop-color="#D4A449" />
+      <stop offset="80%" stop-color="#F9E2A2" />
+      <stop offset="100%" stop-color="#9C6B1C" />
+    </linearGradient>
+
+    <!-- Soft Drop Shadow for the Blended X -->
+    <filter id="goldBlend" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#4A030E" flood-opacity="0.65" />
+      <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#FFD97D" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Clip Path of the Heart so the Golden X Ribbons Blend Into the Heart Edges -->
+    <clipPath id="heartClip">
+      <path d="M64 114 C61 114 12 79 12 43 C12 23 28 10 46 10 C56 10 61 16 64 22 C67 16 72 10 82 10 C100 10 116 23 116 43 C116 79 67 114 64 114 Z" />
+    </clipPath>
+  </defs>
+
+  <!-- Main 3D Crimson Red Heart Base -->
+  <path
+    d="M64 114 C61 114 12 79 12 43 C12 23 28 10 46 10 C56 10 61 16 64 22 C67 16 72 10 82 10 C100 10 116 23 116 43 C116 79 67 114 64 114 Z"
+    fill="url(#heartGrad)"
+    stroke="url(#goldGrad)"
+    stroke-width="3.5"
+  />
+
+  <!-- Clipped Interior: Blended Golden Glow + Sculpted Golden X -->
+  <g clip-path="url(#heartClip)">
+    <!-- Soft Top-Left Specular Highlight on the Heart -->
+    <ellipse cx="40" cy="30" rx="18" ry="10" transform="rotate(-25 40 30)" fill="#FFFFFF" fill-opacity="0.22" />
+
+    <!-- Warm Gold-Red Aura at the Center Where X Meets the Heart -->
+    <circle cx="64" cy="56" r="42" fill="url(#blendGlow)" />
+
+    <!-- Subtle Golden Swooshes Wrapping from Heart Curves into the X -->
+    <path
+      d="M16 26 C38 38 90 74 112 92"
+      stroke="url(#goldGrad)"
+      stroke-width="14"
+      stroke-linecap="round"
+      opacity="0.18"
+    />
+    <path
+      d="M112 26 C90 38 38 74 16 92"
+      stroke="url(#goldGrad)"
+      stroke-width="14"
+      stroke-linecap="round"
+      opacity="0.18"
+    />
+
+    <!-- Bold Luxury Serif/Ribbon Golden "X" Centered & Blended in the Heart -->
+    <g filter="url(#goldBlend)">
+      <!-- First Stroke of X (Top-Left to Bottom-Right, Tapered Elegant Curve) -->
+      <path
+        d="M36 29 C43 29 48 33 64 53 C80 73 85 81 93 83 C86 86 78 83 62 63 C46 43 41 35 36 29 Z"
+        fill="url(#goldGrad)"
+      />
+      <path
+        d="M38 28 L50 28 L91 84 L79 84 Z"
+        rx="4"
+        fill="url(#goldGrad)"
+      />
+
+      <!-- Second Stroke of X (Top-Right to Bottom-Left) -->
+      <path
+        d="M79 28 L91 28 L50 84 L38 84 Z"
+        rx="4"
+        fill="url(#goldGrad)"
+      />
+
+      <!-- Serif Caps for a Regal Monogram Finish -->
+      <rect x="33" y="26" width="21" height="4.5" rx="2.2" fill="url(#goldGrad)" />
+      <rect x="74" y="26" width="21" height="4.5" rx="2.2" fill="url(#goldGrad)" />
+      <rect x="33" y="81.5" width="21" height="4.5" rx="2.2" fill="url(#goldGrad)" />
+      <rect x="74" y="81.5" width="21" height="4.5" rx="2.2" fill="url(#goldGrad)" />
+
+      <!-- Center Diamond Sparkle Where the X Crosses Inside the Heart -->
+      <polygon points="64,47 68,56 64,65 60,56" fill="#FFFDF5" opacity="0.85" />
+    </g>
+  </g>
+</svg>
