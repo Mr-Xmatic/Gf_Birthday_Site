@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg5" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#1E050E" />
+      <stop offset="55%" stop-color="#3B101F" />
+      <stop offset="100%" stop-color="#4F182B" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg5)" />
+  <rect x="44" y="44" width="712" height="912" rx="20" fill="none" stroke="#D8B878" stroke-opacity="0.4" stroke-width="1.5" />
+  <!-- Crescent Moon & Stars -->
+  <path d="M435 305 A95 95 0 1 0 435 485 A75 75 0 1 1 435 305 Z" fill="#D8B878" fill-opacity="0.82" />
+  <circle cx="310" cy="310" r="4" fill="#FFF8F0" />
+  <circle cx="490" cy="340" r="3" fill="#E8A0AD" />
+  <circle cx="340" cy="460" r="3.5" fill="#D8B878" />
+  <text x="400" y="640" text-anchor="middle" fill="#D8B878" font-family="Georgia, serif" font-size="22" letter-spacing="6">MEMORY V</text>
+  <text x="400" y="695" text-anchor="middle" fill="#FFF8F0" font-family="Georgia, serif" font-style="italic" font-size="42">Midnight Whispers</text>
+  <text x="400" y="750" text-anchor="middle" fill="#E8A0AD" font-family="sans-serif" font-size="20" letter-spacing="1">Replace in public/photos/memory-5</text>
+</svg>

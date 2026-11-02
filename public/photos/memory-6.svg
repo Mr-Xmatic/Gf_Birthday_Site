@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <linearGradient id="bg6" x1="100%" y1="100%" x2="0%" y2="0%">
+      <stop offset="0%" stop-color="#3B101F" />
+      <stop offset="50%" stop-color="#581C32" />
+      <stop offset="100%" stop-color="#250712" />
+    </linearGradient>
+  </defs>
+  <rect width="800" height="1000" fill="url(#bg6)" />
+  <rect x="44" y="44" width="712" height="912" rx="20" fill="none" stroke="#E8A0AD" stroke-opacity="0.45" stroke-width="1.5" />
+  <polygon points="400,260 510,390 400,520 290,390" fill="#E8A0AD" fill-opacity="0.16" stroke="#D8B878" stroke-width="2" />
+  <path d="M400 355 C380 335, 352 348, 352 376 C352 405, 400 432, 400 445 C400 432, 448 405, 448 376 C448 348, 420 335, 400 355 Z" fill="#E8A0AD" />
+  <text x="400" y="640" text-anchor="middle" fill="#D8B878" font-family="Georgia, serif" font-size="22" letter-spacing="6">MEMORY VI</text>
+  <text x="400" y="695" text-anchor="middle" fill="#FFF8F0" font-family="Georgia, serif" font-style="italic" font-size="42">Partners In Crime</text>
+  <text x="400" y="750" text-anchor="middle" fill="#E8A0AD" font-family="sans-serif" font-size="20" letter-spacing="1">Replace in public/photos/memory-6</text>
+</svg>
