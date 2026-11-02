@@ -45,26 +45,53 @@ const LoopingCarouselMedia: React.FC<LoopingCarouselMediaProps> = ({
 
   if (isVideo) {
     return (
-      <video
-        ref={videoRef}
-        src={src}
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        className="w-full h-full object-cover select-none pointer-events-none"
-      />
+      <div
+        onContextMenu={(e) => e.preventDefault()}
+        className="relative w-full h-full select-none"
+        style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+      >
+        <video
+          ref={videoRef}
+          src={src}
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          controls={false}
+          controlsList="nodownload nofullscreen noremoteplayback"
+          disablePictureInPicture
+          disableRemotePlayback
+          onContextMenu={(e) => e.preventDefault()}
+          className="w-full h-full object-cover select-none pointer-events-none"
+        />
+        {/* Transparent Long-Press Shield so Mobile Browsers Never Trigger Download Menu */}
+        <div
+          onContextMenu={(e) => e.preventDefault()}
+          className="absolute inset-0 z-10"
+        />
+      </div>
     );
   }
 
   return (
-    <img
-      src={src}
-      alt={alt}
-      loading="lazy"
-      draggable={false}
-      className="w-full h-full object-cover select-none"
-    />
+    <div
+      onContextMenu={(e) => e.preventDefault()}
+      className="relative w-full h-full select-none"
+      style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+    >
+      <img
+        src={src}
+        alt={alt}
+        loading="lazy"
+        draggable={false}
+        onContextMenu={(e) => e.preventDefault()}
+        className="w-full h-full object-cover select-none pointer-events-none"
+      />
+      <div
+        onContextMenu={(e) => e.preventDefault()}
+        className="absolute inset-0 z-10"
+      />
+    </div>
   );
 };
 
@@ -236,12 +263,15 @@ export const PhotoMemoryGalleryScreen: React.FC<
             return (
               <div
                 key={photo.id}
+                onContextMenu={(e) => e.preventDefault()}
                 onClick={() => {
                   if (!isDraggingRef.current) {
                     handleSelectPhotoIndex(idx);
                   }
                 }}
                 style={{
+                  WebkitTouchCallout: 'none',
+                  WebkitUserSelect: 'none',
                   transform: `rotateY(${itemAngle}deg) translateZ(${radius}px) scale(${
                     isFront ? 1.05 : angularDiff === 1 ? 0.88 : 0.76
                   })`,
@@ -254,7 +284,7 @@ export const PhotoMemoryGalleryScreen: React.FC<
                     : 0.22,
                   filter: isFront ? 'brightness(1.03)' : 'brightness(0.65)',
                 }}
-                className={`absolute inset-0 rounded-2xl overflow-hidden transition-all duration-700 cursor-pointer bg-burgundy-deep ${
+                className={`absolute inset-0 rounded-2xl overflow-hidden transition-all duration-700 cursor-pointer bg-burgundy-deep select-none ${
                   isFront
                     ? 'border-2 border-champagne shadow-gold-glow z-20'
                     : 'border border-rose/30 shadow-romantic z-10'
@@ -276,7 +306,7 @@ export const PhotoMemoryGalleryScreen: React.FC<
                       setLightboxPhoto(photo);
                     }}
                     aria-label="Open memory in full view"
-                    className="absolute top-3 right-3 w-8 h-8 rounded-full bg-burgundy-deep/75 border border-champagne/45 flex items-center justify-center text-champagne hover:scale-110 transition-transform"
+                    className="absolute top-3 right-3 z-20 w-8 h-8 rounded-full bg-burgundy-deep/75 border border-champagne/45 flex items-center justify-center text-champagne hover:scale-110 transition-transform"
                   >
                     <Maximize2 className="w-3.5 h-3.5" />
                   </button>
@@ -384,12 +414,16 @@ export const PhotoMemoryGalleryScreen: React.FC<
                 type="button"
                 onClick={() => setLightboxPhoto(null)}
                 aria-label="Close lightbox"
-                className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-burgundy-deep/80 border border-champagne/40 flex items-center justify-center text-ivory"
+                className="absolute top-4 right-4 z-20 w-10 h-10 rounded-full bg-burgundy-deep/80 border border-champagne/40 flex items-center justify-center text-ivory"
               >
                 <X className="w-5 h-5" />
               </button>
 
-              <div className="w-full aspect-[9/16] max-h-[82dvh] bg-burgundy-deep">
+              <div
+                onContextMenu={(e) => e.preventDefault()}
+                style={{ WebkitTouchCallout: 'none', WebkitUserSelect: 'none' }}
+                className="relative w-full aspect-[9/16] max-h-[82dvh] bg-burgundy-deep select-none"
+              >
                 {/\.(mp4|webm|mov)$/i.test(lightboxPhoto.src) ? (
                   <video
                     src={lightboxPhoto.src}
@@ -397,15 +431,27 @@ export const PhotoMemoryGalleryScreen: React.FC<
                     loop
                     muted
                     playsInline
-                    className="w-full h-full object-cover"
+                    controls={false}
+                    controlsList="nodownload nofullscreen noremoteplayback"
+                    disablePictureInPicture
+                    disableRemotePlayback
+                    onContextMenu={(e) => e.preventDefault()}
+                    className="w-full h-full object-cover select-none pointer-events-none"
                   />
                 ) : (
                   <img
                     src={lightboxPhoto.src}
                     alt={lightboxPhoto.caption || 'Memory'}
-                    className="w-full h-full object-cover"
+                    draggable={false}
+                    onContextMenu={(e) => e.preventDefault()}
+                    className="w-full h-full object-cover select-none pointer-events-none"
                   />
                 )}
+                {/* Transparent Long-Press Shield over Lightbox Media */}
+                <div
+                  onContextMenu={(e) => e.preventDefault()}
+                  className="absolute inset-0 z-10"
+                />
               </div>
             </motion.div>
           </motion.div>
