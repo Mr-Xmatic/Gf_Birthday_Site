@@ -36,6 +36,7 @@ export function useBackgroundMusic(): BackgroundMusicController {
   const usingFallbackSynthRef = useRef<boolean>(false);
   const synthIntervalRef = useRef<number | null>(null);
   const duckTimeoutRef = useRef<number | null>(null);
+  const fadeIntervalRef = useRef<number | null>(null);
 
   const getAudioContext = useCallback((): AudioContext | null => {
     if (typeof window === 'undefined') return null;
@@ -101,7 +102,7 @@ export function useBackgroundMusic(): BackgroundMusicController {
     }
   }, []);
 
-  // Initialize HTMLAudioElement once and wire up automatic music ducking for sound effects
+  // Initialize HTMLAudioElement once and wire up smooth, gentle volume ramping
   useEffect(() => {
     const audio = new Audio(SITE_CONFIG.audio.backgroundMusicPath);
     audio.loop = true;
@@ -115,18 +116,57 @@ export function useBackgroundMusic(): BackgroundMusicController {
     audio.addEventListener('error', handleError);
     audioRef.current = audio;
 
-    registerMusicDucker((durationMs: number, duckedVolume = 0.08) => {
+    const smoothVolumeTo = (targetVol: number, durationMs = 180) => {
       const el = audioRef.current;
       if (!el) return;
-      el.volume = Math.min(el.volume, duckedVolume);
+      if (fadeIntervalRef.current) {
+        window.clearInterval(fadeIntervalRef.current);
+        fadeIntervalRef.current = null;
+      }
+
+      const startVol = el.volume;
+      const diff = targetVol - startVol;
+      if (Math.abs(diff) < 0.01) {
+        el.volume = targetVol;
+        return;
+      }
+
+      const steps = Math.max(4, Math.floor(durationMs / 20));
+      let currentStep = 0;
+
+      fadeIntervalRef.current = window.setInterval(() => {
+        currentStep++;
+        if (!audioRef.current) return;
+        if (currentStep >= steps) {
+          audioRef.current.volume = targetVol;
+          if (fadeIntervalRef.current) {
+            window.clearInterval(fadeIntervalRef.current);
+            fadeIntervalRef.current = null;
+          }
+        } else {
+          audioRef.current.volume = Math.max(
+            0,
+            Math.min(1, startVol + (diff * currentStep) / steps)
+          );
+        }
+      }, 20);
+    };
+
+    registerMusicDucker((durationMs: number, duckedVolume = 0.3) => {
+      const el = audioRef.current;
+      if (!el) return;
+
+      // Never drop below 70% of normal song volume so the music flow never feels interrupted
+      const safeFloor = SITE_CONFIG.audio.defaultVolume * 0.7;
+      const targetDuck = Math.max(safeFloor, duckedVolume);
+
+      smoothVolumeTo(targetDuck, 120);
 
       if (duckTimeoutRef.current) {
         window.clearTimeout(duckTimeoutRef.current);
       }
       duckTimeoutRef.current = window.setTimeout(() => {
-        if (audioRef.current) {
-          audioRef.current.volume = SITE_CONFIG.audio.defaultVolume;
-        }
+        smoothVolumeTo(SITE_CONFIG.audio.defaultVolume, 260);
         duckTimeoutRef.current = null;
       }, durationMs);
     });
@@ -135,6 +175,9 @@ export function useBackgroundMusic(): BackgroundMusicController {
       registerMusicDucker(null);
       if (duckTimeoutRef.current) {
         window.clearTimeout(duckTimeoutRef.current);
+      }
+      if (fadeIntervalRef.current) {
+        window.clearInterval(fadeIntervalRef.current);
       }
       audio.removeEventListener('error', handleError);
       audio.pause();

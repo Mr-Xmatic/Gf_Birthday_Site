@@ -62,13 +62,13 @@ function createNoiseBuffer(ctx: AudioContext, durationSec: number): AudioBuffer 
 /**
  * Fires a realistic party-popper cannon pop at `startTime`
  */
-function scheduleCannonPop(ctx: AudioContext, startTime: number, volume = 0.35) {
-  // 1. Low-mid cannon thump (210Hz -> 55Hz)
+function scheduleCannonPop(ctx: AudioContext, startTime: number, volume = 0.5) {
+  // 1. Low-mid cannon thump (220Hz -> 58Hz)
   const thumpOsc = ctx.createOscillator();
   const thumpGain = ctx.createGain();
   thumpOsc.type = 'triangle';
-  thumpOsc.frequency.setValueAtTime(210, startTime);
-  thumpOsc.frequency.exponentialRampToValueAtTime(55, startTime + 0.15);
+  thumpOsc.frequency.setValueAtTime(220, startTime);
+  thumpOsc.frequency.exponentialRampToValueAtTime(58, startTime + 0.15);
   thumpGain.gain.setValueAtTime(volume, startTime);
   thumpGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.16);
   thumpOsc.connect(thumpGain);
@@ -81,8 +81,8 @@ function scheduleCannonPop(ctx: AudioContext, startTime: number, volume = 0.35) 
   snapSource.buffer = createNoiseBuffer(ctx, 0.1);
   const snapFilter = ctx.createBiquadFilter();
   snapFilter.type = 'bandpass';
-  snapFilter.frequency.setValueAtTime(1400, startTime);
-  snapFilter.Q.setValueAtTime(1.1, startTime);
+  snapFilter.frequency.setValueAtTime(1500, startTime);
+  snapFilter.Q.setValueAtTime(1.0, startTime);
   const snapGain = ctx.createGain();
   snapGain.gain.setValueAtTime(volume, startTime);
   snapGain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.095);
@@ -102,28 +102,27 @@ export function triggerSoundEffect(type: SoundEffectType): void {
 
   try {
     if (type === 'click') {
-      // Crisp, warm tactile button pop
+      // Crisp tactile button pop (no music dip needed)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(540, now);
-      osc.frequency.exponentialRampToValueAtTime(920, now + 0.07);
-      gain.gain.setValueAtTime(0.16, now);
+      osc.frequency.setValueAtTime(560, now);
+      osc.frequency.exponentialRampToValueAtTime(960, now + 0.07);
+      gain.gain.setValueAtTime(0.22, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(now);
       osc.stop(now + 0.085);
     } else if (type === 'dodge') {
-      // Playful quick "boing-zip" slide when the button dodges her finger
-      musicDuckCallback?.(350, 0.18);
+      // Playful quick "boing-zip" slide (no music dip needed)
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(320, now);
-      osc.frequency.exponentialRampToValueAtTime(860, now + 0.09);
-      osc.frequency.exponentialRampToValueAtTime(480, now + 0.17);
-      gain.gain.setValueAtTime(0.24, now);
+      osc.frequency.setValueAtTime(340, now);
+      osc.frequency.exponentialRampToValueAtTime(920, now + 0.09);
+      osc.frequency.exponentialRampToValueAtTime(500, now + 0.17);
+      gain.gain.setValueAtTime(0.34, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
       osc.connect(gain);
       gain.connect(ctx.destination);
@@ -131,19 +130,18 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       osc.stop(now + 0.19);
     } else if (type === 'blow') {
       // Realistic breathy wind puff for blowing out birthday cake candles
-      musicDuckCallback?.(400, 0.14);
       const noiseSource = ctx.createBufferSource();
       noiseSource.buffer = createNoiseBuffer(ctx, 0.26);
 
       const bandpass = ctx.createBiquadFilter();
       bandpass.type = 'bandpass';
-      bandpass.frequency.setValueAtTime(560, now);
-      bandpass.frequency.exponentialRampToValueAtTime(220, now + 0.24);
-      bandpass.Q.setValueAtTime(1.3, now);
+      bandpass.frequency.setValueAtTime(600, now);
+      bandpass.frequency.exponentialRampToValueAtTime(240, now + 0.24);
+      bandpass.Q.setValueAtTime(1.2, now);
 
       const gain = ctx.createGain();
       gain.gain.setValueAtTime(0.01, now);
-      gain.gain.linearRampToValueAtTime(0.32, now + 0.04);
+      gain.gain.linearRampToValueAtTime(0.42, now + 0.04);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
 
       noiseSource.connect(bandpass);
@@ -152,14 +150,13 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       noiseSource.start(now);
       noiseSource.stop(now + 0.26);
     } else if (type === 'error') {
-      musicDuckCallback?.(450, 0.15);
       // Playful double "uh-oh" tone
-      [260, 195].forEach((freq, i) => {
+      [270, 200].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + i * 0.13);
-        gain.gain.setValueAtTime(0.22, now + i * 0.13);
+        gain.gain.setValueAtTime(0.32, now + i * 0.13);
         gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.13 + 0.12);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -167,14 +164,13 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.stop(now + i * 0.13 + 0.13);
       });
     } else if (type === 'success') {
-      musicDuckCallback?.(600, 0.16);
       // Uplifting romantic chord chime
       [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + i * 0.065);
-        gain.gain.setValueAtTime(0.2, now + i * 0.065);
+        gain.gain.setValueAtTime(0.28, now + i * 0.065);
         gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.065 + 0.4);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -182,14 +178,13 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.stop(now + i * 0.065 + 0.42);
       });
     } else if (type === 'secret') {
-      musicDuckCallback?.(750, 0.14);
       // Magical music-box sparkle arpeggio for hidden gallery hearts
       [659.25, 830.61, 987.77, 1318.51, 1661.22].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        osc.type = 'sine';
+        osc.type = 'triangle';
         osc.frequency.setValueAtTime(freq, now + i * 0.07);
-        gain.gain.setValueAtTime(0.2, now + i * 0.07);
+        gain.gain.setValueAtTime(0.26, now + i * 0.07);
         gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.07 + 0.48);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -197,34 +192,36 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.stop(now + i * 0.07 + 0.5);
       });
     } else if (type === 'countdown') {
-      // Duck background song down to 6% volume so the 3 -> 2 -> 1 countdown is front and center!
-      musicDuckCallback?.(1150, 0.06);
+      // Very gentle, barely noticeable softening of the song (from 0.42 to 0.29)
+      // while boosting the countdown chime itself so the song's groove never dips!
+      musicDuckCallback?.(950, 0.29);
 
-      // 1. Punchy cinematic impact drum (260Hz -> 68Hz triangle so phone speakers project it loudly)
+      // 1. Punchy cinematic impact drum (280Hz -> 75Hz triangle)
       const boom = ctx.createOscillator();
       const boomGain = ctx.createGain();
       boom.type = 'triangle';
-      boom.frequency.setValueAtTime(260, now);
-      boom.frequency.exponentialRampToValueAtTime(68, now + 0.38);
-      boomGain.gain.setValueAtTime(0.48, now);
-      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.42);
+      boom.frequency.setValueAtTime(280, now);
+      boom.frequency.exponentialRampToValueAtTime(75, now + 0.36);
+      boomGain.gain.setValueAtTime(0.62, now);
+      boomGain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
       boom.connect(boomGain);
       boomGain.connect(ctx.destination);
       boom.start(now);
-      boom.stop(now + 0.44);
+      boom.stop(now + 0.42);
 
-      // 2. Crisp, loud countdown broadcast beep/chime (880Hz + 1760Hz octave harmonics)
-      [880, 1760].forEach((freq, idx) => {
+      // 2. Bright, crystal-clear countdown chime (880Hz + 1318.5Hz + 1760Hz) that sits clearly above the music
+      [880, 1318.51, 1760].forEach((freq, idx) => {
         const chime = ctx.createOscillator();
         const chimeGain = ctx.createGain();
         chime.type = idx === 0 ? 'triangle' : 'sine';
         chime.frequency.setValueAtTime(freq, now);
-        chimeGain.gain.setValueAtTime(idx === 0 ? 0.38 : 0.22, now);
-        chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.36);
+        const peak = idx === 0 ? 0.52 : idx === 1 ? 0.32 : 0.28;
+        chimeGain.gain.setValueAtTime(peak, now);
+        chimeGain.gain.exponentialRampToValueAtTime(0.001, now + 0.38);
         chime.connect(chimeGain);
         chimeGain.connect(ctx.destination);
         chime.start(now);
-        chime.stop(now + 0.38);
+        chime.stop(now + 0.4);
       });
 
       // 3. Sharp clockwork transient tick at t = 0
@@ -232,9 +229,9 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       tickNoise.buffer = createNoiseBuffer(ctx, 0.035);
       const tickFilter = ctx.createBiquadFilter();
       tickFilter.type = 'bandpass';
-      tickFilter.frequency.setValueAtTime(2200, now);
+      tickFilter.frequency.setValueAtTime(2400, now);
       const tickGain = ctx.createGain();
-      tickGain.gain.setValueAtTime(0.32, now);
+      tickGain.gain.setValueAtTime(0.42, now);
       tickGain.gain.exponentialRampToValueAtTime(0.001, now + 0.032);
       tickNoise.connect(tickFilter);
       tickFilter.connect(tickGain);
@@ -242,12 +239,12 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       tickNoise.start(now);
       tickNoise.stop(now + 0.035);
     } else if (type === 'confetti') {
-      // Duck background music so the party cannons & fanfare pop clearly
-      musicDuckCallback?.(1400, 0.1);
+      // Gentle, subtle softening (0.42 -> 0.31) so the song keeps flowing naturally
+      musicDuckCallback?.(900, 0.31);
 
       // 1. Dual party-popper cannon pops ("POP! ... POP!")
-      scheduleCannonPop(ctx, now, 0.38);
-      scheduleCannonPop(ctx, now + 0.22, 0.32);
+      scheduleCannonPop(ctx, now, 0.52);
+      scheduleCannonPop(ctx, now + 0.22, 0.44);
 
       // 2. Shimmering confetti flutter noise
       const flutter = ctx.createBufferSource();
@@ -257,7 +254,7 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       hp.frequency.setValueAtTime(3000, now + 0.05);
       const flutterGain = ctx.createGain();
       flutterGain.gain.setValueAtTime(0.001, now);
-      flutterGain.gain.linearRampToValueAtTime(0.12, now + 0.08);
+      flutterGain.gain.linearRampToValueAtTime(0.16, now + 0.08);
       flutterGain.gain.exponentialRampToValueAtTime(0.001, now + 0.68);
       flutter.connect(hp);
       hp.connect(flutterGain);
@@ -273,7 +270,7 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.type = 'triangle';
         const t = now + 0.04 + i * 0.065;
         osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.22, t);
+        gain.gain.setValueAtTime(0.3, t);
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.62);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -281,15 +278,14 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.stop(t + 0.64);
       });
     } else if (type === 'sparkle') {
-      musicDuckCallback?.(600, 0.18);
-      // Delicate fairy-dust sparkle chime
+      // Delicate fairy-dust sparkle chime (no music dip needed)
       [783.99, 987.77, 1174.66, 1567.98, 1975.53].forEach((freq, i) => {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'sine';
         const t = now + i * 0.055;
         osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.15, t);
+        gain.gain.setValueAtTime(0.22, t);
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.36);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -297,10 +293,11 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.stop(t + 0.38);
       });
     } else if (type === 'envelope') {
-      musicDuckCallback?.(2400, 0.12);
-      // Multi-stage sound synchronized with the envelope opening animation:
+      // Very subtle softening (0.42 -> 0.32) while the wax seal cracks & harp plays
+      musicDuckCallback?.(1800, 0.32);
+
       // Stage A (now + 0.52s): Wax seal crack/pop
-      scheduleCannonPop(ctx, now + 0.52, 0.24);
+      scheduleCannonPop(ctx, now + 0.52, 0.34);
 
       // Stage B (now + 1.02s): Crisp parchment paper slide
       const paperSlide = ctx.createBufferSource();
@@ -311,7 +308,7 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       paperFilter.frequency.exponentialRampToValueAtTime(900, now + 1.34);
       const paperGain = ctx.createGain();
       paperGain.gain.setValueAtTime(0.001, now + 1.02);
-      paperGain.gain.linearRampToValueAtTime(0.18, now + 1.1);
+      paperGain.gain.linearRampToValueAtTime(0.26, now + 1.1);
       paperGain.gain.exponentialRampToValueAtTime(0.001, now + 1.35);
       paperSlide.connect(paperFilter);
       paperFilter.connect(paperGain);
@@ -326,7 +323,7 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.type = 'triangle';
         const t = now + 1.55 + i * 0.08;
         osc.frequency.setValueAtTime(freq, t);
-        gain.gain.setValueAtTime(0.17, t);
+        gain.gain.setValueAtTime(0.25, t);
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.56);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -334,11 +331,12 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         osc.stop(t + 0.58);
       });
     } else if (type === 'gift-open') {
-      musicDuckCallback?.(2500, 0.12);
-      // Luxury gift box shake + ribbon release + celestial shimmer as the 3D bracelet rises
+      // Very subtle softening (0.42 -> 0.32) while the gift box opens
+      musicDuckCallback?.(1900, 0.32);
+
       // 1. Subtle box rattle (now + 0.08s & 0.24s)
-      scheduleCannonPop(ctx, now + 0.08, 0.16);
-      scheduleCannonPop(ctx, now + 0.24, 0.2);
+      scheduleCannonPop(ctx, now + 0.08, 0.24);
+      scheduleCannonPop(ctx, now + 0.24, 0.28);
 
       // 2. Magical rising angelic chord arpeggio (now + 0.85s -> 2.4s)
       const shimmerNotes = [
@@ -351,7 +349,7 @@ export function triggerSoundEffect(type: SoundEffectType): void {
         const t = now + 0.85 + i * 0.14;
         osc.frequency.setValueAtTime(freq, t);
         gain.gain.setValueAtTime(0.001, t);
-        gain.gain.linearRampToValueAtTime(0.18, t + 0.08);
+        gain.gain.linearRampToValueAtTime(0.26, t + 0.08);
         gain.gain.exponentialRampToValueAtTime(0.001, t + 0.85);
         osc.connect(gain);
         gain.connect(ctx.destination);
@@ -365,9 +363,9 @@ export function triggerSoundEffect(type: SoundEffectType): void {
       const filter = ctx.createBiquadFilter();
       filter.type = 'bandpass';
       filter.frequency.setValueAtTime(2400 + Math.random() * 600, now);
-      filter.Q.setValueAtTime(2.2, now);
+      filter.Q.setValueAtTime(2.0, now);
       const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.055, now);
+      gain.gain.setValueAtTime(0.075, now);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 0.022);
       penNoise.connect(filter);
       filter.connect(gain);
