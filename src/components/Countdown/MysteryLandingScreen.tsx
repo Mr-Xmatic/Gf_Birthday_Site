@@ -41,8 +41,18 @@ export const MysteryLandingScreen: React.FC<MysteryLandingScreenProps> = ({
   const handlePlayfulClick = useCallback(() => {
     onPlayDodgeSound();
 
+    const todayFormatted = new Intl.DateTimeFormat('en-US', {
+      timeZone: SITE_CONFIG.timezone,
+      month: 'long',
+      day: 'numeric',
+    }).format(new Date());
+
     const messages = SITE_CONFIG.landingScreen.playfulMessages;
-    const nextMsg = messages[attemptCount % messages.length];
+    const rawMsg = messages[attemptCount % messages.length];
+    const nextMsg =
+      todayFormatted === 'November 4'
+        ? rawMsg.replace('I said November 4, not {TODAY}.', 'Almost time, baby! ❤️')
+        : rawMsg.replace('{TODAY}', todayFormatted);
     setCurrentMessage(nextMsg);
     setAttemptCount((prev) => prev + 1);
 

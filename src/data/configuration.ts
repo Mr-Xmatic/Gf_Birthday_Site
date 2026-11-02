@@ -168,7 +168,7 @@ export const SITE_CONFIG: SiteConfiguration = {
     buttonLabel: 'OPEN YOUR SURPRISE',
     playfulMessages: [
       'Easy there, impatient princess. 😂',
-      'I said November 4, not November 1.',
+      'I said November 4, not {TODAY}.',
       'Somebody clearly cannot wait.',
       'Patience, baby. Your time will come.',
       'Nice try. But rules are rules. ❤️',
