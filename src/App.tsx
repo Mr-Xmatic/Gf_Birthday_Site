@@ -202,7 +202,7 @@ export const App: React.FC = () => {
             <PersonalizedQuizScreen
               key="screen-6-quiz"
               onCompleteQuiz={handleQuizComplete}
-              onPlaySelectSound={() => playSoundEffect('click')}
+              onPlaySelectSound={() => playSoundEffect('success')}
             />
           )}
 
@@ -240,7 +240,7 @@ export const App: React.FC = () => {
               key="screen-9b-gift-experience"
               onCompleteAllGifts={handleCompleteGiftExperience}
               onPlayClickSound={() => playSoundEffect('click')}
-              onPlayOpenSound={() => playSoundEffect('envelope')}
+              onPlayOpenSound={() => playSoundEffect('gift-open')}
               onPlaySuccessSound={() => playSoundEffect('confetti')}
             />
           )}

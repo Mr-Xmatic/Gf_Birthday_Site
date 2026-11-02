@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles, Feather } from 'lucide-react';
 import { SITE_CONFIG } from '../../data/configuration';
 import { triggerSubtleSparkleBurst } from '../Confetti/CelebrationConfetti';
+import { triggerSoundEffect } from '../../utils/soundEffects';
 
 interface InteractiveLoveLetterScreenProps {
   onCompleteLetter: () => void;
@@ -119,7 +120,11 @@ export const InteractiveLoveLetterScreen: React.FC<
           window.clearInterval(interval);
           return letterSegments.totalTicks;
         }
-        return prev + 1;
+        const next = prev + 1;
+        if (next % 5 === 0) {
+          triggerSoundEffect('pen');
+        }
+        return next;
       });
     }, 22);
 

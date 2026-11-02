@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import confetti from 'canvas-confetti';
+import { triggerSoundEffect } from '../../utils/soundEffects';
 
 const ROMANTIC_CONFETTI_COLORS = [
   '#E8A0AD', // Rose pink
@@ -9,7 +10,15 @@ const ROMANTIC_CONFETTI_COLORS = [
   '#EAD3A3', // Soft gold highlight
 ];
 
+let lastGrandConfettiSoundTime = 0;
+
 export function triggerGrandCelebrationConfetti() {
+  const now = Date.now();
+  if (now - lastGrandConfettiSoundTime > 350) {
+    lastGrandConfettiSoundTime = now;
+    triggerSoundEffect('confetti');
+  }
+
   // Respect reduced motion preference
   if (
     typeof window !== 'undefined' &&
@@ -61,6 +70,8 @@ export function triggerGrandCelebrationConfetti() {
 }
 
 export function triggerSubtleSparkleBurst() {
+  triggerSoundEffect('sparkle');
+
   if (
     typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches
