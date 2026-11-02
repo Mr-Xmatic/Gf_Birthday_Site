@@ -499,32 +499,34 @@ export const InteractiveLoveLetterScreen: React.FC<
 
                 {/* Letter-by-Letter Closing Sign-off ("I Love You❤️") & Signature Below ("Your X") */}
                 {signOffState.isStarted && (
-                  <div className="mt-8 pt-5 border-t border-burgundy/15 flex flex-col items-end text-right px-2 relative z-10 space-y-1">
-                    <span className="font-handwriting text-xl sm:text-2xl font-semibold text-burgundy/90 tracking-wide block">
-                      {signOffState.text}
-                      {signOffState.isWritingNow && (
-                        <span className="inline-block w-0.5 h-5 bg-burgundy/85 ml-1 animate-pulse align-middle" />
-                      )}
-                    </span>
-
-                    {signatureState.isStarted && (
-                      <div className="relative inline-block">
-                        <span className="font-handwriting text-xl sm:text-2xl font-bold text-burgundy tracking-wider block">
-                          {signatureState.text}
-                          {signatureState.isWritingNow && (
-                            <span className="inline-block w-0.5 h-5 bg-burgundy/85 ml-1 animate-pulse align-middle" />
-                          )}
-                        </span>
-                        {isFinishedWriting && (
-                          <motion.div
-                            initial={{ width: 0 }}
-                            animate={{ width: '100%' }}
-                            transition={{ duration: 0.65 }}
-                            className="h-0.5 bg-gradient-to-r from-transparent via-burgundy to-rose-deep mt-0.5 rounded-full"
-                          />
+                  <div className="mt-8 pt-5 border-t border-burgundy/15 flex justify-end px-2 relative z-10">
+                    <div className="inline-flex flex-col items-start text-left space-y-1">
+                      <span className="font-handwriting text-xl sm:text-2xl font-semibold text-burgundy/90 tracking-wide block">
+                        {signOffState.text}
+                        {signOffState.isWritingNow && (
+                          <span className="inline-block w-0.5 h-5 bg-burgundy/85 ml-1 animate-pulse align-middle" />
                         )}
-                      </div>
-                    )}
+                      </span>
+
+                      {signatureState.isStarted && (
+                        <div className="relative inline-block">
+                          <span className="font-handwriting text-xl sm:text-2xl font-bold text-burgundy tracking-wider block">
+                            {signatureState.text}
+                            {signatureState.isWritingNow && (
+                              <span className="inline-block w-0.5 h-5 bg-burgundy/85 ml-1 animate-pulse align-middle" />
+                            )}
+                          </span>
+                          {isFinishedWriting && (
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{ width: '100%' }}
+                              transition={{ duration: 0.65 }}
+                              className="h-0.5 bg-gradient-to-r from-burgundy via-rose-deep to-transparent mt-0.5 rounded-full"
+                            />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
 

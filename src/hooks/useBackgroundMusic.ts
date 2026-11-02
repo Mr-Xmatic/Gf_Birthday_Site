@@ -1,6 +1,10 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { SITE_CONFIG } from '../data/configuration';
-import { SoundEffectType, triggerSoundEffect } from '../utils/soundEffects';
+import {
+  SoundEffectType,
+  triggerSoundEffect,
+  registerMusicDucker,
+} from '../utils/soundEffects';
 
 export type { SoundEffectType };
 
@@ -31,6 +35,7 @@ export function useBackgroundMusic(): BackgroundMusicController {
   const audioCtxRef = useRef<AudioContext | null>(null);
   const usingFallbackSynthRef = useRef<boolean>(false);
   const synthIntervalRef = useRef<number | null>(null);
+  const duckTimeoutRef = useRef<number | null>(null);
 
   const getAudioContext = useCallback((): AudioContext | null => {
     if (typeof window === 'undefined') return null;
@@ -96,7 +101,7 @@ export function useBackgroundMusic(): BackgroundMusicController {
     }
   }, []);
 
-  // Initialize HTMLAudioElement once
+  // Initialize HTMLAudioElement once and wire up automatic music ducking for sound effects
   useEffect(() => {
     const audio = new Audio(SITE_CONFIG.audio.backgroundMusicPath);
     audio.loop = true;
@@ -110,7 +115,27 @@ export function useBackgroundMusic(): BackgroundMusicController {
     audio.addEventListener('error', handleError);
     audioRef.current = audio;
 
+    registerMusicDucker((durationMs: number, duckedVolume = 0.08) => {
+      const el = audioRef.current;
+      if (!el) return;
+      el.volume = Math.min(el.volume, duckedVolume);
+
+      if (duckTimeoutRef.current) {
+        window.clearTimeout(duckTimeoutRef.current);
+      }
+      duckTimeoutRef.current = window.setTimeout(() => {
+        if (audioRef.current) {
+          audioRef.current.volume = SITE_CONFIG.audio.defaultVolume;
+        }
+        duckTimeoutRef.current = null;
+      }, durationMs);
+    });
+
     return () => {
+      registerMusicDucker(null);
+      if (duckTimeoutRef.current) {
+        window.clearTimeout(duckTimeoutRef.current);
+      }
       audio.removeEventListener('error', handleError);
       audio.pause();
       stopAmbientSynth();
